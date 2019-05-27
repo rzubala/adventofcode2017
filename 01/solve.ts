@@ -1,11 +1,12 @@
-import * as file from 'fs';
+import { FileReader } from '../common';
 
-class Captcha {
+class Captcha extends FileReader {
     len: number = 0;
     array: Array<string> = [];
     
     constructor() {
-        this.readData()
+        super();
+        this.readData('input.data')
             .then(data => {
                 this.len = data.length;
                 this.array = data.split('');        
@@ -14,17 +15,6 @@ class Captcha {
                 this.calculateSum(this.len/2);             
             })
             .catch(err => console.log(err));
-    }
-
-    readData = ():Promise<any> => {
-        return new Promise((resolve, reject) => {
-            file.readFile('input.data', 'utf8', function(err, data) {  
-                if (err) {
-                    reject(err);
-                }
-                resolve(data);
-            })
-        });
     }
 
     calculateSum = (inc: number) => {

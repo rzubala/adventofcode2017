@@ -1,28 +1,18 @@
-import * as file from 'fs';
+import { FileReader } from '../common';
 
-class Checksum {
+class Checksum extends FileReader {
 
     data: Array<Array<number>> = new Array();
 
     constructor() {
-        this.readData()
+        super();
+        this.readData('input.data')
         .then((data) => {
             this.parseData(data);
             this.log();
             this.calcSum();
         })
         .catch(err => console.log('error:', err));
-    }
-
-    readData = ():Promise<any> => {
-        return new Promise((resolve, reject) => {
-            file.readFile('input.data', 'utf8', (err, data) => {
-                if (err) {
-                    reject(err);
-                }
-                resolve(data);
-            });
-        });
     }
 
     parseData = (fdata: string) => {
