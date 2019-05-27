@@ -9,8 +9,8 @@ class Checksum extends FileReader {
         this.readData('input.data')
         .then((data) => {
             this.parseData(data);
-            this.log();
             this.calcSum();
+            this.calcSum2();
         })
         .catch(err => console.log('error:', err));
     }
@@ -33,6 +33,33 @@ class Checksum extends FileReader {
             sum += Math.max(...line) - Math.min(...line);
         });
         console.log(sum);
+    }
+
+    calcSum2 = () => {
+        let sum: number = 0;
+        this.data.forEach(line => {
+            const size: number = line.length;
+            for (let i=0;i<size;i++) {
+                for (let j=i+1;j<size;j++) {
+                    const val = this.check(line[i], line[j]);
+                    if (val > 0) {
+                        sum += val;
+                        break;
+                    }
+                }
+            }
+        });
+        console.log(sum);
+    }
+
+    check = (num1: number, num2: number):number => {
+        if (num1 > num2 && num1%num2 === 0) {
+            return num1/num2;
+        }
+        if (num2 > num1 && num2%num1 === 0) {
+            return num2/num1;
+        }
+        return 0;
     }
 }
 
