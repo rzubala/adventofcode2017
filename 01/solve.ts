@@ -5,19 +5,25 @@ class Captcha {
     array: Array<string> = [];
     
     constructor() {
-        this.readData(this);
+        this.readData()
+            .then(data => {
+                this.len = data.length;
+                this.array = data.split('');        
+    
+                this.calculateSum(1);
+                this.calculateSum(this.len/2);             
+            })
+            .catch(err => console.log(err));
     }
 
-    readData = (captcha: Captcha) => {
-        file.readFile('input.data', 'utf8', function(err, data) {  
-            if (err) {
-                throw err;
-            }    
-            captcha.len = data.length;
-            captcha.array = data.split('');        
-
-            captcha.calculateSum(1);
-            captcha.calculateSum(captcha.len/2);
+    readData = ():Promise<any> => {
+        return new Promise((resolve, reject) => {
+            file.readFile('input.data', 'utf8', function(err, data) {  
+                if (err) {
+                    reject(err);
+                }
+                resolve(data);
+            })
         });
     }
 
