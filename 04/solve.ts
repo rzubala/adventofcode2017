@@ -9,7 +9,8 @@ class Pass extends FileReader {
         .then(data => {
             this.parse(data);
             //this.log();
-            this.check();
+            this.check1();
+            this.check2();
         })
         .catch(e => console.log('error: ', e));
     }
@@ -27,7 +28,7 @@ class Pass extends FileReader {
         })
     }
 
-    check = () => {
+    check1 = () => {
         let valid: number = 0;
         this.data.forEach(line => {
             if (!this.hasDuplicates(line)) {
@@ -37,8 +38,30 @@ class Pass extends FileReader {
         console.log(valid);
     }
 
+    check2 = () => {
+        let valid: number = 0;
+        this.data.forEach(line => {
+            if (!this.hasDuplicates(line) && !this.containsAnagrams(line)) {
+                valid += 1;
+            }
+        });
+        console.log(valid);
+    }
+
     hasDuplicates = (line: Array<string>): boolean => {
         return new Set(line).size !== line.length
+    }
+
+    containsAnagrams = (line: Array<string>): boolean => {
+        const converted: Array<string> = line.map(el => el.split('').sort().join(''));
+        for (let i=0;i<converted.length;i++) {
+            for (let j=i+1;j<converted.length;j++) {                                
+                if (converted[i] === converted[j]) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
 
