@@ -1,7 +1,7 @@
 import { FileReader } from '../common';
 
 class CPUJumps extends FileReader {
-    private data: Array<string>;
+    private data: Array<number>;
 
     constructor() {
         super();
