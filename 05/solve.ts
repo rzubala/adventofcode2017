@@ -8,8 +8,9 @@ class CPUJumps extends FileReader {
         this.readData('input.data')
         .then(fdata => {
             this.data = fdata.split('\n').map(e => +e);
-            this.log();
-            this.calc();
+            this.calc(false);
+            this.data = fdata.split('\n').map(e => +e);
+            this.calc(true);
         });
     }
 
@@ -17,15 +18,18 @@ class CPUJumps extends FileReader {
         console.log(this.data.join(','));
     }
 
-    calc = () => {
+    calc = (mode: boolean) => {
         const len = this.data.length;
         let p: number = 0;
         let cnt: number = 0;
         while(p>=0 && p<len) {
             const cur:number = this.data[p];
-            this.data[p] = cur + 1;
+            let offset: number = 1;
+            if (mode && cur >= 3) {
+                offset = -1;
+            }
+            this.data[p] = cur + offset;
             p = p + cur; 
-            //console.log(cnt, p)           
             cnt += 1;
         }
         console.log(cnt);    
