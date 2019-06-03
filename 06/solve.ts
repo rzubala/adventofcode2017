@@ -5,8 +5,6 @@ class Debugger extends FileReader {
 
     private banks: Array<number> = [];
 
-    private hist: Set<String> = new Set();
-
     private map: Map<string, number> = new Map();
 
     constructor() {
@@ -22,7 +20,7 @@ class Debugger extends FileReader {
     process = () => {
         let cnt: number = 0;
         while(true) {
-            console.log(this.banks.join(' '));
+            //console.log(this.banks.join(' '));
             const value = Math.max(...this.banks);        
             const valueIdx: number = this.banks.indexOf(value);
             this.fill(value, valueIdx);
@@ -58,12 +56,11 @@ class Debugger extends FileReader {
     }
 
     addHistory = (cnt: number) => {
-        if (this.hist.has(this.checksum())) {
+        if (this.map.has(this.checksum())) {
             const prev: number = this.map.get(this.checksum());
             console.log('loop: ', cnt - prev);
             return true;
         }
-        this.hist.add(this.checksum());
         this.map.set(this.checksum(), cnt);
         return false;
     }
