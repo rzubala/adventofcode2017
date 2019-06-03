@@ -13,10 +13,11 @@ class Tower extends FileReader {
 
     constructor() {
         super();
-        this.readData('test.data')
+        this.readData('input.data')
         .then(fdata => {
-            this.parse(fdata);
-            this.log();
+            this.parse(fdata);            
+            //this.log();
+            console.log(this.findBottom());
         })
         .catch(e => console.log('error: ', e));
     }
@@ -41,6 +42,28 @@ class Tower extends FileReader {
             }            
             this.nodes.push({name: name, parent:'', size: nodeSize, children: children});
         }
+    }
+
+    findBottom = () => {
+        const parents: Array<NodeData> = this.nodes.filter(n => n.children.length > 0);
+        for (let i=0;i<parents.length;i++) {
+            let found: boolean = false;
+            const node: string = parents[i].name;
+            for (let j=0;j<parents.length;j++) {
+                if (i === j) {
+                    continue;
+                }
+                const children: Array<string> = parents[j].children;
+                if (children.includes(node)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                return node;
+            }
+        }
+        return '';
     }
 
     log = () => {
