@@ -3,6 +3,7 @@ import { FileReader } from '../common';
 class Garbage extends FileReader {
     private data: Array<string>;
     private score: number = 0;
+    private garbageCnt: number = 0;
 
     constructor() {
         super();
@@ -11,7 +12,7 @@ class Garbage extends FileReader {
             this.data = fdata.split('');
             
             this.calculateScore();
-            console.log('score: ', this.score);
+            console.log('score: ', this.score, this.garbageCnt);
         })
         .catch(e => console.log('error: ', e))
         ;
@@ -26,6 +27,9 @@ class Garbage extends FileReader {
                 skipNext = false;
                 return;
             }
+            if (garbage && el !== '>' && el !== '!') {
+                this.updateGarbage();
+            }
             if (el === '!') {
                 skipNext = true;
             } else if (!garbage && el === '{') {
@@ -39,6 +43,10 @@ class Garbage extends FileReader {
                 garbage = false;
             }
         });
+    }
+
+    updateGarbage = () => {
+        this.garbageCnt += 1;
     }
 
     updateScore = (value: number) => {
