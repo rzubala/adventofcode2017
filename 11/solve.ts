@@ -50,6 +50,8 @@ const directions = {
 }
 
 class HexGrid extends FileReader {
+    private max: number = 0;
+
     constructor() {
         super();
         this.readData('input.data')
@@ -57,8 +59,13 @@ class HexGrid extends FileReader {
             const cube: Cube = new CubeImpl();
             fdata.split(',').forEach(d => {
                 directions[d](cube);
+
+                const localMax: number = this.dist(cube);
+                if (localMax > this.max) {
+                    this.max = localMax;
+                }
             });
-            console.log('dist: ', this.dist(cube));
+            console.log('dist: ', this.dist(cube), this.max);
         })
         .catch(e => console.log('error: ' + e))
         ;
