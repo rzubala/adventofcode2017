@@ -11,6 +11,11 @@ class Layer {
         this.layer = layer;
     }
 
+    reset = () => {
+        this.position = 0;
+        this.down = true;
+    }
+
     next = () => {
         if (this.down) {
             this.position += 1;
@@ -36,10 +41,11 @@ class Solve extends FileReader {
 
     constructor() {
         super();
-        this.readData('input.data')
+        this.readData('test.data')
         .then(fdata => {
             this.parse(fdata);
 
+            //part 1
             let time: number = 0;
             do {
                 this.check(time);
@@ -47,17 +53,50 @@ class Solve extends FileReader {
                 time++;
             } while (time < this.size + 1);
             console.log('severity:',this.severity);
+
+            //part 2
+            for (let it=0;it<20;it++) {
+                console.log('Delay:', it);
+                if (this.findDelay(it)) {                    
+                    break;
+                }
+            }
         })
         .catch(e => console.log('error: ', e));
     }
 
-    check = (time: number) => {
+    findDelay = (delay: number) => {
+        let it: number = 0;
+        let time: number = 0;
+        this.severity = 0;
+        this.reset();
+        do {
+            //console.log(delay, time, it);
+            if (time >= delay) { 
+                if (this.check(it)) {
+                    //console.log('caught at', time);
+                    return false;
+                }
+                it++;
+            }
+            this.layers.forEach(l => l.next());
+            time++;
+        } while (it < this.size + 1);
+        return true;
+    }
+
+    reset = () => {
+        this.layers.forEach(l => l.reset());
+    }
+
+    check = (time: number): boolean => {
         for (let layer of this.layers) {
             if (layer.layer === time && layer.position === 0) {
                 this.severity += layer.layer * layer.size;
-                break;
+                return true;
             }
         }
+        return false;
     }
 
     parse = (fdata: string) => {
