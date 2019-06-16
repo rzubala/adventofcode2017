@@ -7,7 +7,6 @@ interface Program {
 
 class FindProgram extends FileReader {
     private programs: Program[];
-    private search: number = 0;
     private result: Set<number> = new Set();
 
     constructor() {
@@ -15,12 +14,29 @@ class FindProgram extends FileReader {
         this.readData('input.data')
         .then(fdata => {
             this.parse(fdata);
-            this.programs.forEach(p => {                
-                const parents: number[] = [p.id];
-                this.searchProgram(p, parents);
-            });
-            //console.log(this.result);
-            console.log('size:', this.result.size);
+            
+            let search: number = 0;
+            let it: number = 1;
+            do {
+                const group: number[] = Array.from(this.result.values());
+                this.result = new Set();
+                const toCheck: Program[] = this.programs
+                    .map(p => p.id)
+                    .filter(p => !group.includes(p))
+                    .map(p => this.getProgram(p));
+                if (toCheck.length === 0) {
+                    break;
+                }    
+                if (it > 1) {
+                    search = toCheck[0].id;
+                }
+                toCheck.forEach(p => {                
+                        const parents: number[] = [p.id];
+                        this.searchProgram(p, search, parents);
+                });
+                this.programs = [...toCheck];
+                console.log('size for program', search, this.result.size, it++);
+            } while (true);
         })
         .catch(e => console.log('error: ', e));
     }
@@ -32,9 +48,9 @@ class FindProgram extends FileReader {
         });
     }
 
-    searchProgram = (program: Program, parents: number[]): boolean => {
+    searchProgram = (program: Program, search: number, parents: number[]): boolean => {
         const ch: number[] = program.children;
-        if (program.id === this.search || this.result.has(program.id) ||  ch.includes(this.search)) {
+        if (program.id === search || this.result.has(program.id) ||  ch.includes(search)) {
             parents.forEach(p => this.result.add(p));
             return;
         }
@@ -46,7 +62,7 @@ class FindProgram extends FileReader {
             if (childProgram) {
                 const chparents: number[] = [...parents];
                 chparents.push(childId);    
-                this.searchProgram(childProgram, chparents);
+                this.searchProgram(childProgram, search, chparents);
             }
         }
     }
