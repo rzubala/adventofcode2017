@@ -1,8 +1,8 @@
 import { FileReader } from '../common';
 
-class HashCalc extends FileReader {
-    private lengths: Array<number>;
+export class HashCalc extends FileReader {
     private data: Array<number>;
+    private buffer: Array<number>;
     private size: number = 256;
     private index: number = 0;
     private skipSize: number = 0;
@@ -12,23 +12,21 @@ class HashCalc extends FileReader {
     constructor() {
         super();
         this.data = Array.from(Array(this.size), (x, index) => index);
+    }
+
+    start() {
         this.readData('input.data')
         .then(fdata => {
             //part 1
-            // this.lengths = fdata.split(',').map(e => +e);
-            // this.lengths.forEach(l => {
-            //     this.handleSubList(l);                    
-            // })
-            // console.log('check: ', this.data[0] * this.data[1]);
+            let lengths: Array<number> = fdata.split(',').map(e => +e);
+            this.buffer = [...this.data];
+            lengths.forEach(l => {
+                this.handleSubList(l);                    
+            })
+            console.log('check: ', this.buffer[0] * this.buffer[1]);
 
             //part 2
-            this.lengths = this.toASCII(fdata).concat(this.suffix);
-            for (let r=0;r<this.rounds;r++) {
-                this.lengths.forEach(l => {
-                   this.handleSubList(l);                    
-                });
-            }            
-            console.log(this.toHex(this.toHash(this.data)));
+            console.log(this.toKnotHash(fdata));
         })
         .catch(e => console.log('error: ', e));
     }
@@ -43,14 +41,14 @@ class HashCalc extends FileReader {
             end = this.size;
             toInsert = end - this.index;
         }
-        const list: Array<number> = this.data.slice(this.index, end);
+        const list: Array<number> = this.buffer.slice(this.index, end);
         if (ringEnd > 0) {
-            list.push(...this.data.slice(0, ringEnd));
+            list.push(...this.buffer.slice(0, ringEnd));
         }
         list.reverse();
-        this.data.splice(this.index, toInsert, ...list.slice(0, toInsert));
+        this.buffer.splice(this.index, toInsert, ...list.slice(0, toInsert));
         if (ringEnd > 0) {
-            this.data.splice(0, ringEnd, ...list.slice(toInsert));
+            this.buffer.splice(0, ringEnd, ...list.slice(toInsert));
         }        
         this.index += len + this.skipSize;
         this.skipSize += 1; 
@@ -71,5 +69,19 @@ class HashCalc extends FileReader {
     toASCII = (value: string): number[] => {
         return value.split('').map(c => c.charCodeAt(0));
     }
+
+    toKnotHash = (input: string): string => {
+        const lengths: Array<number> = this.toASCII(input).concat(this.suffix);
+        this.buffer = [...this.data];
+        this.index = 0;
+        this.skipSize = 0;    
+        for (let r=0;r<this.rounds;r++) {
+            lengths.forEach(l => {
+               this.handleSubList(l);                    
+            });
+        }            
+        return this.toHex(this.toHash(this.buffer));
+    }
 }
-new HashCalc();
+
+//new HashCalc().start();
