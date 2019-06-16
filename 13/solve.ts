@@ -41,7 +41,7 @@ class Solve extends FileReader {
 
     constructor() {
         super();
-        this.readData('test.data')
+        this.readData('input.data')
         .then(fdata => {
             this.parse(fdata);
 
@@ -55,7 +55,7 @@ class Solve extends FileReader {
             console.log('severity:',this.severity);
 
             //part 2
-            for (let it=0;it<20;it++) {
+            for (let it=0;it<200;it++) {
                 console.log('Delay:', it);
                 if (this.findDelay(it)) {                    
                     break;
