@@ -11,6 +11,11 @@ class Layer {
         this.layer = layer;
     }
 
+    set = (layer: Layer) => {
+        this.position = layer.position;
+        this.down = layer.down;
+    }
+
     reset = () => {
         this.position = 0;
         this.down = true;
@@ -36,6 +41,7 @@ class Layer {
 class Solve extends FileReader {
 
     private layers: Layer[] = [];
+    private stored: Layer[] = [];
     private size: number = 0;
     private severity: number = 0;
 
@@ -55,7 +61,7 @@ class Solve extends FileReader {
             console.log('severity:',this.severity);
 
             //part 2
-            for (let it=0;it<200;it++) {
+            for (let it=199999;it<20000000;it++) {
                 console.log('Delay:', it);
                 if (this.findDelay(it)) {                    
                     break;
@@ -65,16 +71,29 @@ class Solve extends FileReader {
         .catch(e => console.log('error: ', e));
     }
 
+    store = () => {
+        this.stored = this.layers.map(l => {
+            const layer: Layer = new Layer(l.layer, l.size);
+            layer.set(l);
+            return layer;
+        });
+    }
+
     findDelay = (delay: number) => {
         let it: number = 0;
         let time: number = 0;
         this.severity = 0;
         this.reset();
+        if (this.stored.length !== 0) {
+            this.layers = [...this.stored];
+            time = delay - 1;
+        }
         do {
-            //console.log(delay, time, it);
-            if (time >= delay) { 
+            if (time >= delay) {
+                if (time === delay) {
+                    this.store();
+                } 
                 if (this.check(it)) {
-                    //console.log('caught at', time);
                     return false;
                 }
                 it++;
