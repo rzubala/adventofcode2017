@@ -12,14 +12,15 @@ class FindProgram extends FileReader {
 
     constructor() {
         super();
-        this.readData('test.data')
+        this.readData('input.data')
         .then(fdata => {
             this.parse(fdata);
-            this.programs.forEach(p => {
+            this.programs.forEach(p => {                
                 const parents: number[] = [p.id];
                 this.searchProgram(p, parents);
             });
-            console.log(this.result);
+            //console.log(this.result);
+            console.log('size:', this.result.size);
         })
         .catch(e => console.log('error: ', e));
     }
@@ -33,8 +34,8 @@ class FindProgram extends FileReader {
 
     searchProgram = (program: Program, parents: number[]): boolean => {
         const ch: number[] = program.children;
-        if (ch.includes(this.search)) {
-            this.result.add(program.id);
+        if (program.id === this.search || this.result.has(program.id) ||  ch.includes(this.search)) {
+            parents.forEach(p => this.result.add(p));
             return;
         }
         for (const childId of ch) {
