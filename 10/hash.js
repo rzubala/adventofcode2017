@@ -54,7 +54,7 @@ var HashCalc = /** @class */ (function (_super) {
             return result;
         };
         _this.toHex = function (data) {
-            return data.map(function (d) { return d.toString(16); }).reduce(function (acc, curr) { return (+acc <= 9 ? '0' : '') + acc + (+curr <= 9 ? '0' : '') + curr; });
+            return data.map(function (d) { return d.toString(16); }).reduce(function (acc, curr) { return acc.padStart(2, '0') + curr.padStart(2, '0'); });
         };
         _this.toASCII = function (value) {
             return value.split('').map(function (c) { return c.charCodeAt(0); });
@@ -69,7 +69,8 @@ var HashCalc = /** @class */ (function (_super) {
                     _this.handleSubList(l);
                 });
             }
-            return _this.toHex(_this.toHash(_this.buffer));
+            var result = _this.toHex(_this.toHash(_this.buffer));
+            return result;
         };
         _this.data = Array.from(Array(_this.size), function (x, index) { return index; });
         return _this;

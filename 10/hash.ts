@@ -1,4 +1,5 @@
 import { FileReader } from '../common';
+import { cursorTo } from 'readline';
 
 export class HashCalc extends FileReader {
     private data: Array<number>;
@@ -63,7 +64,7 @@ export class HashCalc extends FileReader {
     }
 
     toHex = (data: number[]): string => {
-        return data.map(d => d.toString(16)).reduce((acc, curr) => (+acc <= 9 ? '0' : '') + acc + (+curr <= 9 ? '0' : '') + curr );
+        return data.map(d => d.toString(16)).reduce((acc, curr) => acc.padStart(2, '0') + curr.padStart(2, '0'));
     }
 
     toASCII = (value: string): number[] => {
@@ -80,6 +81,7 @@ export class HashCalc extends FileReader {
                this.handleSubList(l);                    
             });
         }            
-        return this.toHex(this.toHash(this.buffer));
+        const result: string = this.toHex(this.toHash(this.buffer));
+        return result;
     }
 }
