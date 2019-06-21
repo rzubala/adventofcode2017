@@ -1,14 +1,14 @@
+import { DiffieHellman } from "crypto";
+
 class Solve {
 
     private steps: number = 371;
 
-    private stop: number = 2017;
-
     private buffer: Array<number> = new Array();
 
-    calculate = () => {
+    calculate = (stop: number) => {
         let pos: number = 0;
-        for (let i:number = 0;i<this.stop + 1;i++) {
+        for (let i:number = 0;i<stop + 1;i++) {
             const len: number = this.buffer.length;
             if (len !== 0) {
                 pos = ((pos + this.steps) % len) + 1;
@@ -17,7 +17,22 @@ class Solve {
             }
             this.buffer.splice(pos, 0, i);
         }
-        console.log(this.buffer[pos+1]);
+        console.log('part1: ', this.buffer[pos+1]);
     }
+
+    calculate2 = (stop: number) => {
+        let pos: number = 0;
+        let result: number = 0;
+        for (let i:number = 1;i<stop + 1;i++) {
+            pos = ((pos + this.steps) % i) + 1;
+            if (pos === 1) {
+                result = i;
+            }
+            //console.log(i, pos, result);
+        }
+        console.log('part2: ', result);
+    }
+
 }
-new Solve().calculate();
+new Solve().calculate(2017);
+new Solve().calculate2(50000000);
