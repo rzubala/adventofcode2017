@@ -24,9 +24,8 @@ class Solve extends FileReader {
         this.readData('input.data')
         .then(fdata => {
             this.parse(fdata);
-            //this.operations.forEach(p => this.functions[p.op](p));
-            this.spin({op: 's', data1: '18'});
-            console.log(this.programs);
+            this.operations.forEach(p => this.functions[p.op](p));
+            console.log(this.programs.join(''));
         })
         .catch(e => console.log('error: ', e));
     }
@@ -35,7 +34,7 @@ class Solve extends FileReader {
         this.operations = fdata.split(',').map(e => {
             const tmp: string[] = e.split('');
             if (tmp[0] === 's') {
-                return {op: tmp[0], data1: tmp.slice(1)};
+                return {op: tmp[0], data1: tmp.slice(1).join('')};
             } else  {
                 const data: string[] = e.substring(1).split('/');
                 return {op: tmp[0], data1: data[0], data2: data[1]};
@@ -56,11 +55,18 @@ class Solve extends FileReader {
     }
 
     private exchange = (o: Operation) => {
-
+        const tmp: string = this.programs[+o.data1];
+        this.programs[+o.data1] = this.programs[+o.data2]; 
+        this.programs[+o.data2] = tmp;
     }
 
     private partner = (o: Operation) => {
+        this.exchange({op: 'p', data1: this.getIndex(o.data1), data2: this.getIndex(o.data2)});
+    }
 
+    private getIndex = (p: string): string => {
+        const index: number = this.programs.indexOf(p);
+        return this.programs.indexOf(p).toString();
     }
 }
 new Solve();
