@@ -28,7 +28,6 @@ class Solve {
             if (pos === 1) {
                 result = i;
             }
-            //console.log(i, pos, result);
         }
         console.log('part2: ', result);
     }
