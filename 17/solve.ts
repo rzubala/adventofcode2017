@@ -1,5 +1,3 @@
-import { DiffieHellman } from "crypto";
-
 class Solve {
 
     private steps: number = 371;
