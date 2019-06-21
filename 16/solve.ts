@@ -6,12 +6,15 @@ interface Operation {
     data2?: string;
 }
 
-
 class Solve extends FileReader {
 
     private operations: Operation[];
 
     private programs: string[] = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p'];
+
+    private results: Array<string> = new Array();
+
+    private part2: number = 1000000000;
 
     private functions = {
         's': (p: Operation) => {this.spin(p)},
@@ -24,8 +27,21 @@ class Solve extends FileReader {
         this.readData('input.data')
         .then(fdata => {
             this.parse(fdata);
-            this.operations.forEach(p => this.functions[p.op](p));
-            console.log(this.programs.join(''));
+            let i: number = 0;
+            while(true) {
+                this.operations.forEach(p => this.functions[p.op](p));
+                const result: string = this.programs.join('');
+                if (i === 0) {
+                    console.log('part1: ', result);
+                }
+                if (this.results.includes(result)) {
+                    break;
+                }
+                this.results.push(result);
+                i++;
+            }
+            const position: number = this.part2 - Math.floor(this.part2 / i) * i;
+            console.log('part2: ', this.results[position-1]);
         })
         .catch(e => console.log('error: ', e));
     }
