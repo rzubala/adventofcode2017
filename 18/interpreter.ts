@@ -50,8 +50,11 @@ export class Interpreter extends FileReader {
                     this.getResult();
                     return;
                 }
-            }
+            }            
         }, Interpreter.INTERVAL);
+        setInterval(() => {
+            this.getResult();
+        }, 1000*60)
     }
 
     getResult = () => {        
@@ -67,8 +70,11 @@ export class Interpreter extends FileReader {
     recover = (register: string) => {
     }
 
-    private jump = (register: string, value: string) => {
-        const valX: number = this.get(register);
+    private jump = (testValue: any, value: string) => {
+        let valX: number = +testValue;
+        if (isNaN(valX)) {
+            valX = this.get(testValue);
+        }
         if (valX > 0) {
             let valY: number = +value;
             if (isNaN(valY)) {

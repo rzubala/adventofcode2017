@@ -43,7 +43,6 @@ export class Sync extends Interpreter {
             value = this.get(value);
         }
         this.queue.push(+value);
-        //console.log('snd', this.second, value, this.queue.join(','))
         this.sendCnt++;
     }
 
@@ -57,20 +56,17 @@ export class Sync extends Interpreter {
     recover = (register: string) => {
         let intervals: number = 0;
         this.waiting = true;
-        const tmp: number = Math.floor(Math.random() * 100);
-        //console.log('start', this.second, tmp)
         const intervalHandler = setInterval(() => {
             const value: number = this.getFromSync(this.sync);
             if (value !== undefined) {
                 this.set(register, +value);
                 this.waiting = false;
-                //console.log('rcv', this.second, value, tmp);
                 clearInterval(intervalHandler);
                 return;
             }
             intervals++;
             if (intervals > Sync.TIMEOUT) {
-                console.log('rcv', this.second, 'timeout', tmp);
+                console.log('rcv', this.second, 'timeout');
                 this.waiting = false;
                 this.end = true;
                 clearInterval(intervalHandler);
