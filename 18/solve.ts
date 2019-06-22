@@ -11,6 +11,7 @@ class Solve extends FileReader {
     private registers: Map<string, number> = new Map();
     private lastPlayed: number = 0;
     private pos: number = 0;
+    private recovered: boolean = false;
 
     private operations = {
         'snd': (c: Command) => {this.play(c.data1)},
@@ -22,12 +23,9 @@ class Solve extends FileReader {
         'jgz': (c: Command) => {this.jump(c.data1, c.data2)}
     }
 
-/*
-(An offset of 2 skips the next instruction, an offset of -1 jumps to the previous instruction, and so on.)
-*/
     constructor() {
         super();
-        this.readData('test.data')
+        this.readData('input.data')
         .then(fdata => {
             this.parse(fdata);
             this.process();
@@ -39,9 +37,11 @@ class Solve extends FileReader {
         do {
             const c: Command = this.commands[this.pos];
             this.processCommand(c);
-            this.pos++;
+            if (this.recovered) {
+                break;
+            }
+            this.pos++;            
         } while (this.pos < this.commands.length);
-        console.log('end', this.lastPlayed);
     }
 
     private play = (register: string) => {
@@ -52,8 +52,8 @@ class Solve extends FileReader {
 
     private recover = (register: string) => {
         if (this.lastPlayed > 0) {
-            //this.set(register, this.lastPlayed);
             console.log('recover', this.lastPlayed);
+            this.recovered = true;
         }
     }
 
@@ -65,13 +65,13 @@ class Solve extends FileReader {
                 valY = this.get(value);
             }
             this.pos += valY - 1;
-            console.log('jump', valY);
         } 
     }
 
     private get = (register: string): number => {
-        if (this.registers.has(register)) {
-            return this.registers[register];
+        const val: number = this.registers[register]
+        if (val !== undefined) {
+            return +val;
         }
         this.registers[register] = 0;
         return 0;
@@ -91,7 +91,6 @@ class Solve extends FileReader {
         if (isNaN(tmp)) {
             tmp = this.get(value);
         }
-        console.log('add', val + tmp);
         this.set(register, val + tmp);
     }
 
@@ -101,7 +100,6 @@ class Solve extends FileReader {
         if (isNaN(tmp)) {
             tmp = this.get(value);
         }
-        console.log('mul', val, tmp);
         this.set(register, val * tmp);
     }
 
@@ -115,9 +113,7 @@ class Solve extends FileReader {
     }
 
     private processCommand = (c: Command) => {
-        console.log(c);
         this.operations[c.cmd](c);
-        console.log(this.registers);
     }
 
     private parse = (fdata) => {
