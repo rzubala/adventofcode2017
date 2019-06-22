@@ -21,8 +21,7 @@ export class Interpreter extends FileReader {
         'jgz': (c: Command) => {this.jump(c.data1, c.data2)}
     }
 
-    constructor() {
-        super();
+    public start = () => {
         this.readData('input.data')
         .then(fdata => {
             this.parse(fdata);
@@ -31,7 +30,7 @@ export class Interpreter extends FileReader {
         .catch(e => console.log('error: ', e));
     }
 
-    public process = () => {
+    private process = () => {
         do {
             const c: Command = this.commands[this.pos];
             this.processCommand(c);
@@ -42,14 +41,14 @@ export class Interpreter extends FileReader {
         } while (this.pos < this.commands.length);
     }
 
-    public isEnd = ():boolean => {
+    isEnd = ():boolean => {
         return true;
     }
 
-    public play = (register: string) => {
+    play = (register: string) => {
     }
 
-    public recover = (register: string) => {
+    recover = (register: string) => {
     }
 
     private jump = (register: string, value: string) => {
@@ -63,7 +62,7 @@ export class Interpreter extends FileReader {
         } 
     }
 
-    public get = (register: string): number => {
+    get = (register: string): number => {
         const val: number = this.registers[register]
         if (val !== undefined) {
             return +val;

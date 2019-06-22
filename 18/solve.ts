@@ -1,3 +1,3 @@
 import { Sound } from './sound';
 
-new Sound();
+new Sound().start();

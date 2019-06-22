@@ -26,7 +26,7 @@ var Sound = /** @class */ (function (_super) {
         _this.play = function (register) {
             var value = _this.get(register);
             _this.lastPlayed = value;
-            console.log('play', _this.lastPlayed);
+            //console.log('play', this.lastPlayed);
         };
         _this.recover = function (register) {
             if (_this.lastPlayed > 0) {

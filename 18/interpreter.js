@@ -17,7 +17,7 @@ var common_1 = require("../common");
 var Interpreter = /** @class */ (function (_super) {
     __extends(Interpreter, _super);
     function Interpreter() {
-        var _this = _super.call(this) || this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.registers = new Map();
         _this.pos = 0;
         _this.operations = {
@@ -28,6 +28,13 @@ var Interpreter = /** @class */ (function (_super) {
             'mod': function (c) { _this.modulo(c.data1, c.data2); },
             'rcv': function (c) { _this.recover(c.data1); },
             'jgz': function (c) { _this.jump(c.data1, c.data2); }
+        };
+        _this.start = function () {
+            _this.readData('input.data')
+                .then(function (fdata) {
+                _this.parse(fdata);
+                _this.process();
+            })["catch"](function (e) { return console.log('error: ', e); });
         };
         _this.process = function () {
             do {
@@ -110,11 +117,6 @@ var Interpreter = /** @class */ (function (_super) {
                 }
             });
         };
-        _this.readData('input.data')
-            .then(function (fdata) {
-            _this.parse(fdata);
-            _this.process();
-        })["catch"](function (e) { return console.log('error: ', e); });
         return _this;
     }
     return Interpreter;
