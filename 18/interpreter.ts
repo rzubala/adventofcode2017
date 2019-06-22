@@ -10,6 +10,8 @@ export class Interpreter extends FileReader {
     commands: Command[];
     private registers: Map<string, number> = new Map();
     private pos: number = 0;
+    waiting: boolean = false;    
+    public static INTERVAL: number = 1;
 
     private operations = {
         'snd': (c: Command) => {this.play(c.data1)},
@@ -31,14 +33,28 @@ export class Interpreter extends FileReader {
     }
 
     private process = () => {
-        do {
-            const c: Command = this.commands[this.pos];
-            this.processCommand(c);
+        const processInterval = setInterval(() => {
             if (this.isEnd()) {
-                break;
+                clearInterval(processInterval);
+                console.log('***END***');
+                this.getResult();
+                return;
             }
-            this.pos++;            
-        } while (this.pos < this.commands.length);
+            if (!this.waiting) {
+                const c: Command = this.commands[this.pos];
+                this.processCommand(c);
+                this.pos++;    
+                if ((this.pos === this.commands.length)) {
+                    clearInterval(processInterval);
+                    console.log('***FINISH***');
+                    this.getResult();
+                    return;
+                }
+            }
+        }, Interpreter.INTERVAL);
+    }
+
+    getResult = () => {        
     }
 
     isEnd = ():boolean => {
@@ -71,7 +87,7 @@ export class Interpreter extends FileReader {
         return 0;
     }
 
-    private set = (register: string, value: any) => {
+    set = (register: string, value: any) => {
         if (isNaN(+value)) {
             this.registers[register] = this.get(value);
         } else {
