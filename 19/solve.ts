@@ -19,6 +19,7 @@ class Solve extends FileReader {
             const start: number = this.getStart();
             let point: Point = {x: start, y: 0};
             let move: MOVES = MOVES.DOWN;
+            let count: number = 1;
             while (true) {
                 const newPoint: Point = this.getNextMove(point, move);
                 if (newPoint === undefined) {
@@ -26,8 +27,9 @@ class Solve extends FileReader {
                 }
                 move = this.getMove(newPoint, point);
                 point = newPoint;
+                count++;
             }
-            console.log('path', this.path.join(''));
+            console.log('path', count, this.path.join(''));
         })
         .catch(e => console.log('error: ', e));
     }
