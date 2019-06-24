@@ -12,7 +12,7 @@ class Solve extends FileReader {
     private v: Data[] = [];
     private a: Data[] = [];
 
-    private static LIMIT: number = 10000000;
+    private static LIMIT: number = 1000;
 
     constructor() {
         super();
@@ -25,18 +25,19 @@ class Solve extends FileReader {
     }
 
     private process = () => {
-        let cnt: number = 0;
-        let min: number = Number.MAX_VALUE;
-        let index: number = 0;
-        this.p.forEach(d => {
-            const dist:number = this.processData(cnt);
-            if (dist < min) {
-                min = dist;
-                index = cnt;
+        let iter: number = 0;
+        const dist:number[] = new Array(this.p.length);
+        while (true) {
+            this.p.forEach((d, index) => {
+                const tmp:number = this.processData(index);
+                dist[index] = tmp;
+            })
+            if (iter++ > Solve.LIMIT) {
+                break;
             }
-            cnt++;
-        })        
-        console.log('min for ', index);
+        }
+        const min: number = Math.min(...dist);
+        console.log('min for ', min, dist.indexOf(min));
     }
 
     private processData = (cnt: number): number => {
@@ -44,21 +45,11 @@ class Solve extends FileReader {
         const p:Data = this.p[cnt];
         const a:Data = this.a[cnt];
         const v:Data = this.v[cnt];
-
-        let iter: number = 0;
-        while (true) { 
-            this.add(v, a);
-            this.add(p, v);            
-            const dist: number = this.dist(p);
-            if (dist < min) {
-                min = dist;
-            }
-            if (iter++ > Solve.LIMIT) {
-                break;
-            }
-        }
-
-        return min;
+        this.add(v, a);
+        this.add(p, v);
+        this.p[cnt] = p;
+        this.v[cnt] = v;
+        return this.dist(p);
     }
 
     private dist = (d:Data): number => {
