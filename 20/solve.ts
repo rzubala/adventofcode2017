@@ -35,7 +35,7 @@ class Solve extends FileReader {
                 }           
             })
             
-            //splice to remove
+            //part 2
             this.handleCollisions();
 
             if (iter++ > Solve.LIMIT) {
@@ -112,38 +112,3 @@ class Solve extends FileReader {
     }
 }
 new Solve();
-
-/*
-var input = document.body.innerText.trim().split('\n').map(c => c.split(', ').map(a => a.slice(3).slice(0,-1).split(',').map(Number)));
-var xyz = ([x, y, z], [dx, dy, dz]) => [x + dx, y + dy, z + dz]
-var mdist = ([x,y,z]) => Math.abs(x) + Math.abs(y) + Math.abs(z)
-var spos = ([a,b,c], [x,y,z]) => (a == x && b == y && c == z)
-var dist = [];
-var seen = [];
-for(var i = 0; i < 1000; i++){
-
-	input.forEach((particle, index) => {
-		var pos = particle[0];
-		var vel = particle[1];
-		var acc = particle[2];
-		
-		particle[1] = xyz(vel, acc);
-		particle[0] = xyz(pos, particle[1]);
-				
-		dist[index] = mdist(particle[0]);	
-		seen.push(particle[0][0]+'/'+particle[0][1]+'/'+particle[0][2]);
-	});	
-	
-	seen.forEach((val, index) => {
-		var a = seen.indexOf(val);
-		if(a != index){
-			input[a] = null;
-			input[index] = null;
-		}
-	});
-	input = input.filter(c => c != null);
-	seen = [];
-}
-
-console.log(input.length);
-*/
