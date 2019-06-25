@@ -44,6 +44,22 @@ class Solve extends FileReader {
         return result;
     }
 
+    private compare = (matrix1: number[][], matrix2: number[][]):boolean => {
+        const size1:number = matrix1.length;
+        const size2:number = matrix2.length;
+        if (size1 !== size2) {
+            return false;
+        }
+        for (let i=0;i<size1;i++) {
+            for (let j=0;j<size1;j++) {
+                if (matrix1[i][j] !== matrix2[i][j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private test = () => {
         const matrix: number [][] = [];
         const size: number = 3;
@@ -67,6 +83,9 @@ class Solve extends FileReader {
         const rotate: number[][] = this.rotate(matrix);
         console.log('rotate')
         this.log(rotate);        
+
+        console.log('compare true ->', this.compare(matrix, matrix));
+        console.log('compare false ->', this.compare(matrix, rotate));
     }
 
     private log = (matrix: number[][]) => {
