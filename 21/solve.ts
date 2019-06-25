@@ -14,10 +14,10 @@ class Solve extends FileReader {
 
     private flip = (matrix: number[][], horizontal: boolean): number[][] => {
         const result: number[][] = [];
-        const size: number = matrix.length;
-        for (let i=0;i<size;i++) {
+        matrix.forEach(r => {
             result.push([]);
-        }
+        });
+        const size: number = matrix.length;
         for (let i=0;i<size;i++) {
             for (let j=0;j<size;j++) {
                 if (horizontal) {
@@ -25,6 +25,20 @@ class Solve extends FileReader {
                 } else {
                     result[size-1-i][j] = matrix[i][j];
                 }
+            }
+        }
+        return result;
+    }
+
+    private rotate = (matrix: number[][]): number[][] => {
+        const result: number[][] = [];
+        matrix.forEach(r => {
+            result.push([]);
+        });
+        const size: number = matrix.length;
+        for (let i=0;i<size;i++) {
+            for (let j=0;j<size;j++) {
+                result[size-1-i][j] = matrix[j][i];
             }
         }
         return result;
@@ -49,10 +63,13 @@ class Solve extends FileReader {
         const flipV: number[][] = this.flip(matrix, false);
         console.log('flip V')
         this.log(flipV);
+
+        const rotate: number[][] = this.rotate(matrix);
+        console.log('rotate')
+        this.log(rotate);        
     }
 
     private log = (matrix: number[][]) => {
-        const size: number = matrix.length;
         matrix.forEach(r => {
             console.log(r.join(''));
         })
