@@ -2,18 +2,16 @@ import { FileReader } from '../common'
 
 class Solve extends FileReader {
 
-    private static LIMIT: number = 5;
+    private static LIMIT: number = 18;
 
     private patterns: Map<String, String> = new Map();
 
     constructor() {
         super();
-        this.readData('test.data')
+        this.readData('input.data')
         .then(fdata => {
             this.parsePatterns(fdata);
             this.process();
-
-            //this.test();
         })
         .catch(e => console.log('error: ', e));
     }
@@ -31,11 +29,20 @@ class Solve extends FileReader {
             }
             iter++;    
             console.log('after ', iter, matrix.length);
-            this.log(matrix);
             if (iter >= Solve.LIMIT) {
                 break;
             }
         }
+        const cnt: number = this.count(matrix);
+        console.log('cnt', cnt);
+    }
+
+    private count = (matrix: string[][]): number => {
+        let cnt: number = 0;
+        matrix.forEach(r => {
+            cnt += r.filter(c => c === '#').length;
+        })
+        return cnt;
     }
 
     private handleSubMatrix = (subSize: number, matrix: string[][], size: number): string[][] => {
@@ -71,11 +78,16 @@ class Solve extends FileReader {
 
     private convertMatrix = (matrix: string[][], subSize: number): string => {
         const size:number = matrix.length;
+
         for (let pattern in this.patterns) {
             const mPattern: string[][] = this.parse(pattern);
             if (mPattern.length !== size) {
                 continue;
             }
+            if (this.count(matrix) !== this.count(mPattern)) {
+                continue;
+            }
+
             if (this.compare(matrix, mPattern)) {
                 return this.patterns[pattern];
             }
@@ -84,19 +96,40 @@ class Solve extends FileReader {
             }
             if (this.compare(matrix, this.flip(mPattern, false))) {
                 return this.patterns[pattern];
-            }         
+            } 
+
             let rotated:string[][] = this.rotate(mPattern);
             if (this.compare(matrix, rotated)) {
                 return this.patterns[pattern];
             }
+            if (this.compare(matrix, this.flip(rotated, true))) {
+                return this.patterns[pattern];
+            }
+            if (this.compare(matrix, this.flip(rotated, false))) {
+                return this.patterns[pattern];
+            }  
+
             rotated = this.rotate(rotated);
             if (this.compare(matrix, rotated)) {
                 return this.patterns[pattern];
-            }                
+            }       
+            if (this.compare(matrix, this.flip(rotated, true))) {
+                return this.patterns[pattern];
+            }
+            if (this.compare(matrix, this.flip(rotated, false))) {
+                return this.patterns[pattern];
+            }             
+            
             rotated = this.rotate(rotated);
             if (this.compare(matrix, rotated)) {
                 return this.patterns[pattern];
             }
+            if (this.compare(matrix, this.flip(rotated, true))) {
+                return this.patterns[pattern];
+            }
+            if (this.compare(matrix, this.flip(rotated, false))) {
+                return this.patterns[pattern];
+            }             
         }
         return undefined;
     }
@@ -183,7 +216,7 @@ class Solve extends FileReader {
         return result.substring(0, result.length - 1);
     }
 
-    private test = () => {
+    public test = () => {
         const matrix: string[][] = [];
         const size: number = 3;
         let iter: number = 0;
