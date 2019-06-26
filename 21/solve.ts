@@ -43,9 +43,12 @@ class Solve extends FileReader {
         const converted: string = this.convertMatrix(source, subSize);
         if (converted === undefined) {
             console.log('ERROR')
-        } else {
-            this.log(this.parse(converted));
+            process.exit(-1);
         }
+        const cMatrix = this.parse(converted);
+        const newSize = cMatrix.length;
+        //TODO
+    
     }
 
     private convertMatrix = (matrix: string[][], subSize: number): string => {
