@@ -2,6 +2,8 @@ import { FileReader } from '../common'
 
 class Solve extends FileReader {
 
+    private static LIMIT: number = 5;
+
     private patterns: Map<String, String> = new Map();
 
     constructor() {
@@ -18,13 +20,21 @@ class Solve extends FileReader {
 
     private process = () => {
         const start: string = ".#./..#/###";
-        let matrix: string[][] = this.parse(start);
-        let size: number = matrix.length;
-        
-        if (size % 2 === 0) {
-            matrix = this.handleSubMatrix(2, matrix, size);
-        } else if (size % 3 === 0) {
-            matrix = this.handleSubMatrix(3, matrix, size);
+        let matrix: string[][] = this.parse(start);    
+        let iter: number = 0;
+        while (true) {
+            let size: number = matrix.length;        
+            if (size % 2 === 0) {
+                matrix = this.handleSubMatrix(2, matrix, size);
+            } else if (size % 3 === 0) {
+                matrix = this.handleSubMatrix(3, matrix, size);
+            }
+            iter++;    
+            console.log('after ', iter, matrix.length);
+            this.log(matrix);
+            if (iter >= Solve.LIMIT) {
+                break;
+            }
         }
     }
 
@@ -47,26 +57,25 @@ class Solve extends FileReader {
         }
         const cMatrix = this.parse(converted);
         const newSize = cMatrix.length;
-        //TODO
-    
+        if (gj === 0) {
+            for (let i=0;i<newSize;i++) {
+                matrix.push([]);
+            }
+        }
+        for (let i=0;i<newSize;i++) {
+            for (let j=0;j<newSize;j++) {
+                matrix[gi*newSize + i][gj*newSize + j] = cMatrix[i][j];
+            }
+        }   
     }
 
     private convertMatrix = (matrix: string[][], subSize: number): string => {
         const size:number = matrix.length;
-
-        console.log('source')
-        this.log(matrix);
-
         for (let pattern in this.patterns) {
             const mPattern: string[][] = this.parse(pattern);
-
-            console.log('pattern')
-            this.log(mPattern);
-
             if (mPattern.length !== size) {
                 continue;
             }
-
             if (this.compare(matrix, mPattern)) {
                 return this.patterns[pattern];
             }
