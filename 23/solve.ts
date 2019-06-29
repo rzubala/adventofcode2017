@@ -20,6 +20,9 @@ class Solve extends FileReader {
                 console.log(fdata);
                 this.parse(fdata);
                 this.process();
+
+                //part2
+                this.part2();                
             })
             .catch(e => console.log('error: ', e));
     }
@@ -33,7 +36,23 @@ class Solve extends FileReader {
                 break;
             }
         }
+        //part1
         console.log('muls:', this.mulCnt);
+    }
+
+    private part2 = () => {
+        const input:number = 65 * 100 + 100000;
+        let noPrimes:number = 0;
+        for (let i = input; i <= input + 17000; i += 17) {
+            let tmp:number = 2;
+            while (i % tmp !== 0) {
+                tmp++;
+            }
+            if (i !== tmp) {
+                noPrimes++;
+            } 
+        }        
+        console.log('part2', noPrimes);
     }
 
     private processCommand = (c: Command) => {
@@ -91,6 +110,8 @@ class Solve extends FileReader {
     }
 
     private parse = (fdata) => {
+        this.registers.clear();
+        this.pos = 0;
         this.commands = fdata.split('\n').map(l => {
             const data: string[] = l.split(' ');
             return {cmd: data[0], data1: data[1], data2: data[2]};
