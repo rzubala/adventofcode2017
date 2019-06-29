@@ -9,7 +9,8 @@ class Solve extends FileReader {
 
     private map: Map<string, string> = new Map<string, string>();
     private size: number = 0;
-    private steps: number = 10000;
+    private steps1: number = 10000;
+    private steps2: number = 10000000;
 
     private directions: string[] = ['up', 'right', 'down', 'left'];
     private moves = {
@@ -24,19 +25,22 @@ class Solve extends FileReader {
         this.readData('input.data')
         .then(fdata => {
             this.parse(fdata);
-            this.process();
+            this.process1();
+
+            this.parse(fdata);
+            this.process2();
         })
         .catch(e => console.log('error', e))
         ;
     }
 
-    private process = () => {
+    private process1 = () => {
         const start:number = Math.floor(this.size/2);
         let point:Point = {x:start,y:start};
         let direction:number = 0;   //up
         let infections: number = 0;
-        for (let i=0;i<this.steps;i++) {
-            let cell:string = this.map.get(this.toStr(point));
+        for (let i=0;i<this.steps1;i++) {
+            const cell:string = this.map.get(this.toStr(point));
             if (cell === '#') {
                 direction = this.turnRight(direction);
                 this.map.set(this.toStr(point), '.')
@@ -50,12 +54,41 @@ class Solve extends FileReader {
         console.log('infections:', infections)
     }
 
+    private process2 = () => {
+        const start:number = Math.floor(this.size/2);
+        let point:Point = {x:start,y:start};
+        let direction:number = 0;   //up
+        let infections: number = 0;
+        for (let i=0;i<this.steps2;i++) {
+            const cell:string = this.map.get(this.toStr(point));
+            if (cell === '#') {
+                direction = this.turnRight(direction);
+                this.map.set(this.toStr(point), 'F');
+            } else if (cell === 'F') {
+                direction = this.turnDown(direction);
+                this.map.set(this.toStr(point), '.');
+            } else if (cell === 'W') {                
+                this.map.set(this.toStr(point), '#');
+                infections++;
+            } else {
+                direction = this.turnLeft(direction);
+                this.map.set(this.toStr(point), 'W')
+            }
+            point = this.move(point, direction);
+        }
+        console.log('infections:', infections)
+    }
+
     private turnLeft = (direction: number) => {
         return (direction + 3) % 4;
     }
 
     private turnRight = (direction: number) => {
         return (direction + 1) % 4;
+    }
+
+    private turnDown = (direction: number) => {
+        return (direction + 2) % 4;
     }
 
     private move = (point: Point, direction: number): Point => {
