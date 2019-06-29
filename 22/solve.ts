@@ -98,6 +98,7 @@ class Solve extends FileReader {
 
     private parse = (fdata) => {
         this.size = 0;
+        this.map.clear();
         fdata.split('\n').forEach((line,y) => {
             this.size++;
             line.split('').forEach((col, x) => {
