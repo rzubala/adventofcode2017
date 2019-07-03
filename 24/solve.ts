@@ -11,6 +11,10 @@ class Solve extends FileReader {
 
     private max:number = 0;
 
+    private longest:number = 0;
+
+    private longestRes:number = 0;
+
     private ports: Array<Port> = new Array();
 
     constructor() {
@@ -31,7 +35,7 @@ class Solve extends FileReader {
             const nextPin:number = port.port1 === 0 ? port.port2 : port.port1;
             this.findBridge(usedId, nextPin, 0);
         });
-        console.log('max', this.max);
+        console.log('max', this.max, this.longest, this.longestRes);
     }
 
     private findBridge = (usedId: number[], nextPin: number, lvl: number) => {
@@ -55,6 +59,15 @@ class Solve extends FileReader {
         const result:number = ports.reduce((acc, id) => { return acc + this.getPort(id).sum}, 0);
         if (result > this.max) {
             this.max = result;
+        }
+        if (ports.length === this.longest) {
+            if (result > this.longestRes) {
+                this.longestRes = result;
+            }
+        }
+        if (ports.length > this.longest) {
+            this.longest = ports.length;
+            this.longestRes = result;
         }
         return result;
     }
