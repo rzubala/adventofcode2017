@@ -3,10 +3,10 @@ import { FileReader } from '../common'
 class Solve extends FileReader {
 
     private tape: Map<number, boolean> = new Map();
-
     private step: number = 0;
-
     private limit: number = 12919244;
+    private state:string = '';
+    private cursor: number = 0;
 
     private states = {
         'A': (cursor: number) => { this.stateA(cursor) },
@@ -18,7 +18,14 @@ class Solve extends FileReader {
     }
 
     public start = () => {
-        this.nextState('A', 0);
+        this.nextState('A', 0);            
+        while (true) {
+            if (this.step++ === this.limit) {
+                console.log('END');
+                return;
+            }
+            this.states[this.state](this.cursor);                
+        }    
     }
 
     private stateA = (cursor: number) => {
@@ -82,11 +89,8 @@ class Solve extends FileReader {
     } 
 
     private nextState = (state: string, cursor: number) => {
-        if (this.step++ === this.limit) {
-            console.log('END');
-            return;
-        }
-        this.states[state](cursor);
+        this.state = state;
+        this.cursor = cursor;
     }
 
     private get = (cursor: number): boolean => {
