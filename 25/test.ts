@@ -6,15 +6,11 @@ class Solve extends FileReader {
 
     private step: number = 0;
 
-    private limit: number = 12919244;
+    private limit: number = 6;
 
     private states = {
         'A': (cursor: number) => { this.stateA(cursor) },
-        'B': (cursor: number) => { this.stateB(cursor) },
-        'C': (cursor: number) => { this.stateC(cursor) },
-        'D': (cursor: number) => { this.stateD(cursor) },
-        'E': (cursor: number) => { this.stateE(cursor) },
-        'F': (cursor: number) => { this.stateF(cursor) },
+        'B': (cursor: number) => { this.stateB(cursor) }
     }
 
     public start = () => {
@@ -27,7 +23,7 @@ class Solve extends FileReader {
             this.nextState('B', cursor + 1);
         } else {
             this.set(cursor, false);
-            this.nextState('C', cursor - 1);
+            this.nextState('B', cursor - 1);
         }
     }
 
@@ -37,49 +33,9 @@ class Solve extends FileReader {
             this.nextState('A', cursor - 1);
         } else {
             this.set(cursor, true);
-            this.nextState('D', cursor + 1);
+            this.nextState('A', cursor + 1);
         }
     }
-
-    private stateC = (cursor: number) => {
-        if (!this.get(cursor)) {
-            this.set(cursor, true);
-            this.nextState('A', cursor + 1);
-        } else {
-            this.set(cursor, false);
-            this.nextState('E', cursor - 1);
-        }
-    }    
-
-    private stateD = (cursor: number) => {
-        if (!this.get(cursor)) {
-            this.set(cursor, true);
-            this.nextState('A', cursor + 1);
-        } else {
-            this.set(cursor, false);
-            this.nextState('B', cursor + 1);
-        }
-    }    
-
-    private stateE = (cursor: number) => {
-        if (!this.get(cursor)) {
-            this.set(cursor, true);
-            this.nextState('F', cursor - 1);
-        } else {
-            this.set(cursor, true);
-            this.nextState('C', cursor - 1);
-        }
-    } 
-    
-    private stateF = (cursor: number) => {
-        if (!this.get(cursor)) {
-            this.set(cursor, true);
-            this.nextState('D', cursor + 1);
-        } else {
-            this.set(cursor, true);
-            this.nextState('A', cursor + 1);
-        }
-    } 
 
     private nextState = (state: string, cursor: number) => {
         if (this.step++ === this.limit) {
